@@ -185,7 +185,7 @@ class AppResource:
             "__APP__": self.app,
             "__YNH_ARCH__": system_arch(),
             "__YNH_DEBIAN_VERSION__": debian_version(),
-            "__YNH_DEBIAN_VERSION_ID__": debian_version_id(),
+            "__YNH_DEBIAN_VERSION_ID__": str(debian_version_id()),
             "__YNH_APP_UPSTREAM_VERSION__": app_upstream_version,
         }
 
@@ -298,7 +298,9 @@ ynh_abort_if_errors
                 env=env_,
                 operation_logger=operation_logger,
                 error_message_if_script_failed="An error occured inside the script snippet",
-                error_message_if_failed=lambda e: f"{action} failed for {self.type} : {e}",
+                error_message_if_failed=lambda e: (
+                    f"{action} failed for {self.type} : {e}"
+                ),
             )
         finally:
             if call_failed:
@@ -1809,7 +1811,7 @@ class RubyAppResource(AppResource):
             # Use half of available CPUs for compiling
             # The trick with 1 + ...  -1 is to prevent having '0' when there's only one CPU available.
             NB_CPU_TO_USE="$(( 1 + ($(grep -c ^processor /proc/cpuinfo) - 1) / 2 ))"
-            export MAKE_OPTS="-j$(NB_CPU_TO_USE)"
+            export MAKE_OPTS="-j$NB_CPU_TO_USE"
             {self.rbenv} install --skip-existing '{ruby_version}' 2>&1
             if {self.rbenv} alias --list | grep --quiet '{self.app} '; then
                 {self.rbenv} alias {self.app} --remove
