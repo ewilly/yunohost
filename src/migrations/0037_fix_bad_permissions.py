@@ -52,6 +52,7 @@ class MyMigration(Migration):
             "/tmp",  # If not in ram, it's wiped at reboot and regularly
             "/var/spool/postfix",  # Postfix public socket seems okish
             "/ynh-dev",  # We don't want to explore /ynh-dev for that
+            "/lost+found", 
         ]
         exclude_conditions = [
             arg for directory in exclude_dirs for arg in ["-path", directory, "-o"]
